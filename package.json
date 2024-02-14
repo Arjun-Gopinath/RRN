@@ -18,6 +18,7 @@
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
     "@vitejs/plugin-react": "^4.2.1",
+    "atomize": "^1.0.28",
     "axios": "^1.6.7",
     "eslint": "^8.55.0",
     "eslint-plugin-react": "^7.33.2",
@@ -26,7 +27,10 @@
     "node-sass": "^9.0.0",
     "react-redux": "^9.1.0",
     "react-router-dom": "^6.22.0",
+    "react-transition-group": "^4.4.5",
     "redux": "^5.0.1",
+    "styletron-engine-atomic": "^1.6.2",
+    "styletron-react": "^6.1.1",
     "vite": "^5.0.8"
   }
 }
