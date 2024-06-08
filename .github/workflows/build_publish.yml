@@ -16,14 +16,14 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20'
+          node-version: '18'
 
       - name: Install dependencies
-        run: npm install --force
+        run: npm install
 
       - name: Build Vite app
         env:
-          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_API_KEY: ${{ secrets.VITE_API_KEY }}
         run: npm run build
 
       - name: Deploy to GitHub Pages
