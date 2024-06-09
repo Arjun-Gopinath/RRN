@@ -4,7 +4,7 @@ import Card from './Card'
 import { fetchPhotos } from '../common/api'
 import { useDispatch, useSelector } from 'react-redux';
 import Header from './Header';
-import "./Main.css"
+import "../styles/Main.css"
 import SearchBox from './SearchBox';
 
 const Main = () => {

@@ -12,7 +12,7 @@ const Card = (props) => {
             <Image h={photo.previewHeight + "px"}
                 w={photo.previewWidth + "px"} src={photo.previewURL} />
             <Div p="2px" d="flex" flexWrap="wrap" bg="secondary" h={"auto"} w={photo.previewWidth + "px"}>
-                {tags.length > 0 && tags.map((tag) => <Tag m={"3px"}>{tag}</Tag>)}
+                {tags.length > 0 && tags.map((tag) => <Tag key={tag} m={"3px"}>{tag}</Tag>)}
             </Div>
         </Div >
     )

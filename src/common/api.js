@@ -2,7 +2,7 @@ import axios from "axios";
 import { addPhotos } from "../features/photos/photoSlice";
 
 export const fetchPhotos = async (dispatch, content, per_page, category) => {
-    const url = `http://pixabay.com/api`;
+    const url = `https://pixabay.com/api`;
     const params = {
         key: import.meta.env.VITE_API_KEY,
         q: content,
@@ -13,29 +13,44 @@ export const fetchPhotos = async (dispatch, content, per_page, category) => {
     };
 
     try {
-        const response = await axios.get(url, {
+        let response = await axios.get(url, {
             params: params,
-            maxRedirects: 0 // Prevent automatic redirects
+            maxRedirects: 0
         });
 
         if (response.status === 200) {
+            console.log("Response Ready");
             dispatch(addPhotos(response.data.hits));
             return response;
         } else {
             throw new Error('Failed to fetch photos');
         }
     } catch (error) {
-        if (error.response && error.response.status === 301) {
-            // Handle the redirect manually if necessary
-            const redirectUrl = error.response.headers.location.replace("http://", "https://");
-            const redirectedResponse = await axios.get(redirectUrl, { params: params });
+        console.log("We're doomed");
+        if (error.response) {
+            let redirectUrl = error.response.headers.location;
 
-            if (redirectedResponse.status === 200) {
-                dispatch(addPhotos(redirectedResponse.data.hits));
-                return redirectedResponse;
+            if (error.response.status === 301 || error.response.status === 307) {
+                if (redirectUrl.startsWith("http://")) {
+                    redirectUrl = redirectUrl.replace("http://", "https://");
+                }
+
+                console.log(redirectUrl, " not yet");
+                response = await axios.get(redirectUrl, {
+                    params: params
+                });
+
+                if (response.status === 200) {
+                    console.log("hurray");
+                    dispatch(addPhotos(response.data.hits));
+                    return response;
+                } else {
+                    throw new Error('Failed to fetch photos after redirect');
+                }
             }
         }
+
         console.error('Error fetching photos:', error);
-        throw error; // Rethrow the error for handling further up the call stack
+        throw error;
     }
 }

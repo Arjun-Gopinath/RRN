@@ -1,5 +1,3 @@
-import './App.css'
-import { Div } from 'atomize'
 import Main from './components/Main'
 
 
