@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Card from './Card'
 import Modal from './Modal'
+import Sidebar from './Sidebar'
 import { fetchPhotos } from '../common/api'
 import { useDispatch, useSelector } from 'react-redux';
 import Header from './Header';
@@ -13,6 +14,7 @@ const Main = () => {
     const [loading, isLoading] = useState(photos.length === 0);
     const [error, isError] = useState(false);
     const [selectedPhoto, setSelectedPhoto] = useState(null);
+    const [currentQuery, setCurrentQuery] = useState('dogs');
 
     async function handlePhotos(query) {
         try {
@@ -35,6 +37,12 @@ const Main = () => {
         setDogs(photos);
     }, [photos]);
 
+    const handleSearch = (query) => {
+        setCurrentQuery(query);
+        isLoading(true);
+        handlePhotos(query);
+    };
+
     return (
         <>
             {selectedPhoto && (
@@ -42,13 +50,7 @@ const Main = () => {
             )}
             <header className="app-header">
                 <Header />
-                <SearchBox
-                    placeholder="Search anything..."
-                    onSearch={(query) => {
-                        isLoading(true);
-                        handlePhotos(query);
-                    }}
-                />
+                <SearchBox placeholder="Search anything..." onSearch={handleSearch} />
             </header>
             {error && (
                 <div className="error-banner">Could not fetch photos. Check your API key or connection.</div>
@@ -58,10 +60,21 @@ const Main = () => {
                     <div className="loader"></div>
                 </div>
             ) : (
-                <div className="content-area photo-grid">
-                    {dogs.length > 0 && dogs.map((dog, i) => (
-                        <Card key={dog.id} photo={dog} index={i} onClick={setSelectedPhoto} />
-                    ))}
+                <div className="content-area">
+                    <div className="layout-wrapper">
+                        <div className="photo-grid">
+                            {dogs.length > 0 && dogs.map((dog, i) => (
+                                <Card key={dog.id} photo={dog} index={i} onClick={setSelectedPhoto} />
+                            ))}
+                        </div>
+                        {dogs.length > 0 && (
+                            <Sidebar
+                                photos={dogs}
+                                currentQuery={currentQuery}
+                                onSearch={handleSearch}
+                            />
+                        )}
+                    </div>
                 </div>
             )}
         </>

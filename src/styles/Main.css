@@ -351,7 +351,132 @@ body {
   color: #5a3a10;
 }
 
+/* ── Layout wrapper (grid + sidebar) ─────────────── */
+.layout-wrapper {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+}
+
+.photo-grid {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Sticky sidebar ───────────────────────────────── */
+.sidebar {
+  width: 210px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 84px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  background: #faf6ef;
+  padding: 16px 14px;
+  box-shadow: 2px 4px 14px rgba(0, 0, 0, 0.22);
+}
+
+.sidebar::before {
+  content: '';
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 35%, #90c4ff, #1a5db5);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4), inset 0 -1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar-query {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 2px;
+}
+
+.sidebar-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #888;
+}
+
+.sidebar-value {
+  font-family: 'Caveat', cursive;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1c1008;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.sidebar-count {
+  font-size: 0.75rem;
+  color: #999;
+}
+
+.sidebar-divider {
+  height: 1px;
+  background: #e0d8cc;
+  margin: 12px 0;
+}
+
+.sidebar-tags-title {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+.sidebar-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.sidebar-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  background: #fff;
+  border: 1px solid #ddd5c8;
+  border-radius: 3px;
+  font-family: 'Caveat', cursive;
+  font-size: 0.9rem;
+  color: #444;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, transform 0.12s;
+  touch-action: manipulation;
+}
+
+.sidebar-tag:hover {
+  background: #B6244F;
+  border-color: #B6244F;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.sidebar-tag:hover .sidebar-tag-count {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.sidebar-tag-count {
+  font-size: 0.7rem;
+  color: #bbb;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
 /* ── Responsive ───────────────────────────────────── */
+@media (max-width: 900px) {
+  .sidebar {
+    display: none;
+  }
+}
+
 @media (max-width: 640px) {
   .app-header {
     flex-wrap: wrap;
