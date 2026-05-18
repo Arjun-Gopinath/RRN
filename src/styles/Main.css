@@ -25,3 +25,162 @@
     transform: rotate(360deg);
   }
 }
+
+/* ── Fixed header ─────────────────────────────────── */
+.app-header {
+  z-index: 1000;
+  width: 100%;
+  position: fixed;
+  top: 0;
+}
+
+/* ── Content area — clears the fixed header ───────── */
+.content-area {
+  padding-top: 120px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* ── Modal ────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-container {
+  position: relative;
+  background: #fff;
+  border-radius: 8px;
+  max-width: 720px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.85);
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: #555;
+  z-index: 1;
+  line-height: 1;
+  padding: 4px 10px;
+  border-radius: 50%;
+  touch-action: manipulation;
+}
+
+.modal-close:hover {
+  color: #000;
+  background: #fff;
+}
+
+.modal-image {
+  width: 100%;
+  display: block;
+  border-radius: 8px 8px 0 0;
+  object-fit: cover;
+  max-height: 480px;
+}
+
+.modal-details {
+  padding: 1rem 1.2rem 1.2rem;
+}
+
+.modal-photographer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.modal-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.modal-username {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.modal-stats {
+  display: flex;
+  gap: 1.2rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+  color: #444;
+}
+
+.modal-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 0.9rem;
+}
+
+.modal-tag {
+  background: #eef0f2;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 0.8rem;
+  color: #333;
+}
+
+.modal-source-link {
+  display: inline-block;
+  font-size: 0.85rem;
+  color: #1a73e8;
+  text-decoration: none;
+}
+
+.modal-source-link:hover {
+  text-decoration: underline;
+}
+
+/* ── Responsive ───────────────────────────────────── */
+@media (max-width: 576px) {
+  .content-area {
+    padding-top: 100px;
+  }
+
+  /* Modal: full-screen sheet on mobile */
+  .modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .modal-container {
+    border-radius: 16px 16px 0 0;
+    max-height: 92vh;
+  }
+
+  .modal-image {
+    border-radius: 16px 16px 0 0;
+    max-height: 220px;
+  }
+
+  .modal-close {
+    top: 8px;
+    right: 8px;
+    font-size: 1.2rem;
+    padding: 6px 11px;
+  }
+
+  .modal-stats {
+    gap: 0.8rem;
+    flex-wrap: wrap;
+  }
+}

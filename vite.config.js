@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/RRN/',
   plugins: [react()],
   define: {
     'process.env': process.env
@@ -11,8 +12,5 @@ export default defineConfig({
     alias: {
       '@': '/src'
     }
-  },
-  exclude: [
-    '/modify_html.js'
-  ]
+  }
 })

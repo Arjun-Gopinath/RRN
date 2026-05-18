@@ -1,6 +1,7 @@
 import { Div, Notification } from 'atomize'
 import React, { useEffect, useState } from 'react'
 import Card from './Card'
+import Modal from './Modal'
 import { fetchPhotos } from '../common/api'
 import { useDispatch, useSelector } from 'react-redux';
 import Header from './Header';
@@ -11,6 +12,7 @@ const Main = () => {
     const dispatch = useDispatch();
     const [loading, isLoading] = useState(true);
     const [error, isError] = useState(false);
+    const [selectedPhoto, setSelectedPhoto] = useState(null);
     const photos = useSelector((state) => state.photos) || {};
     const [dogs, setDogs] = useState({});
     async function handlePhotos(query) {
@@ -31,8 +33,11 @@ const Main = () => {
 
     return (
         <>
+            {selectedPhoto && (
+                <Modal photo={selectedPhoto} onClose={() => setSelectedPhoto(null)} />
+            )}
             <Notification isOpen={error}>Error fetching records</Notification>
-            <header style={{ zIndex: "1000", width: "100%", position: "fixed" }}>
+            <header className="app-header">
                 <Header />
                 <SearchBox placeholder={"Enter description"}
                     onSearch={(query) => {
@@ -45,9 +50,9 @@ const Main = () => {
                 <div className='loader-parent'>
                     <div className="loader"></div>
                 </div> :
-                <Div d="flex" justify="center" align="center" p={{ t: "120px" }} flexWrap="wrap">
+                <Div d="flex" justify="center" align="center" className="content-area" flexWrap="wrap">
                     {
-                        dogs.length > 0 && dogs.map((dog) => <Card key={dog.id} photo={dog} />)
+                        dogs.length > 0 && dogs.map((dog) => <Card key={dog.id} photo={dog} onClick={setSelectedPhoto} />)
                     }
                 </Div>
             }
