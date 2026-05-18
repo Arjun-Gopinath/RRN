@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const Modal = ({ photo, onClose }) => {
     const tags = photo.tags.split(',').map(t => t.trim()).filter(Boolean);
+    const [imgError, setImgError] = useState(false);
 
     useEffect(() => {
         const handleKeyDown = (e) => { if (e.key === 'Escape') onClose(); };
@@ -18,11 +19,19 @@ const Modal = ({ photo, onClose }) => {
             <div className="modal-container" onClick={(e) => e.stopPropagation()}>
                 <button className="modal-close" onClick={onClose} aria-label="Close">&#x2715;</button>
 
-                <img
-                    src={photo.webformatURL}
-                    alt={photo.tags}
-                    className="modal-image"
-                />
+                {imgError ? (
+                    <div className="modal-image modal-img-error" aria-label="Image unavailable">
+                        <span className="modal-img-error-icon">&#128247;</span>
+                        <span className="modal-img-error-text">Image unavailable</span>
+                    </div>
+                ) : (
+                    <img
+                        src={photo.webformatURL}
+                        alt={photo.tags}
+                        className="modal-image"
+                        onError={() => setImgError(true)}
+                    />
+                )}
 
                 <div className="modal-details">
                     <div className="modal-photographer">
