@@ -155,16 +155,18 @@ body {
 /* ── Content area ─────────────────────────────────── */
 .content-area {
   padding-top: 80px;
-  padding-left: 32px;
-  padding-right: 32px;
-  padding-bottom: 60px;
+  padding-left: 40px;
+  padding-right: 40px;
+  padding-bottom: 80px;
+  max-width: 1440px;
+  margin: 0 auto;
 }
 
 /* ── Polaroid grid ────────────────────────────────── */
 .photo-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
-  gap: 44px 28px;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 52px 32px;
 }
 
 /* ── Polaroid card ────────────────────────────────── */
@@ -509,19 +511,33 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-/* ── Infinite scroll sentinel ─────────────────────── */
+/* ── Infinite scroll sentinel & loader ────────────── */
 .scroll-sentinel {
   height: 1px;
   width: 100%;
 }
 
+.fetch-more-loader {
+  display: flex;
+  justify-content: center;
+  padding: 32px 0 8px;
+}
+
+.fetch-more-spinner {
+  border: 5px solid rgba(255, 255, 255, 0.2);
+  border-top: 5px solid rgba(255, 255, 255, 0.75);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  animation: spin 1s linear infinite;
+}
+
 .load-more-hint {
-  grid-column: 1 / -1;
   text-align: center;
-  padding: 18px 0 4px;
+  padding: 24px 0 4px;
   font-family: 'Caveat', cursive;
   font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.45);
   letter-spacing: 0.03em;
 }
 

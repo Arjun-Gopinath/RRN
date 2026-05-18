@@ -21,12 +21,16 @@ const photoSlice = createSlice({
     name: "photos",
     initialState: { photos: readCache() },
     reducers: {
-        addPhotos: (state, { payload }) => {
+        setPhotos: (state, { payload }) => {
             state.photos = payload;
             writeCache(payload);
+        },
+        appendPhotos: (state, { payload }) => {
+            state.photos = [...state.photos, ...payload];
+            writeCache(state.photos);
         }
     }
 })
 
-export const { addPhotos } = photoSlice.actions;
+export const { setPhotos, appendPhotos } = photoSlice.actions;
 export default photoSlice.reducer;

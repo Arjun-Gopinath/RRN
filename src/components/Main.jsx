@@ -7,64 +7,74 @@ import { useDispatch, useSelector } from 'react-redux';
 import Header from './Header';
 import SearchBox from './SearchBox';
 
-const BATCH_SIZE = 24;
+const INITIAL_QUERY = 'dogs';
+const QUERY_CACHE_KEY = 'rrn-query';
+
+const readCachedQuery = () => localStorage.getItem(QUERY_CACHE_KEY) || INITIAL_QUERY;
+const writeCachedQuery = (q) => { try { localStorage.setItem(QUERY_CACHE_KEY, q); } catch {} };
 
 const Main = () => {
     const dispatch = useDispatch();
     const photos = useSelector((state) => state.photos) || [];
-    const [dogs, setDogs] = useState(photos);
     const [loading, isLoading] = useState(photos.length === 0);
+    const [fetchingMore, setFetchingMore] = useState(false);
     const [error, isError] = useState(false);
     const [selectedPhoto, setSelectedPhoto] = useState(null);
-    const [currentQuery, setCurrentQuery] = useState('dogs');
-    const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
+    const [currentQuery, setCurrentQuery] = useState(readCachedQuery);
+    const [page, setPage] = useState(1);
+    const [totalHits, setTotalHits] = useState(0);
     const sentinelRef = useRef(null);
 
-    async function handlePhotos(query) {
+    async function loadPage(query, pageNum, append = false) {
         try {
-            await fetchPhotos(dispatch, query, 200, "any");
+            const result = await fetchPhotos(dispatch, query, pageNum, append);
+            setTotalHits(result.totalHits);
             isLoading(false);
             isError(false);
         } catch {
             isError(true);
             isLoading(false);
+            setFetchingMore(false);
         }
     }
 
     useEffect(() => {
         if (photos.length === 0) {
-            handlePhotos('dogs');
+            loadPage(INITIAL_QUERY, 1, false);
+        } else {
+            setTotalHits(photos.length);
         }
     }, []);
 
-    useEffect(() => {
-        setDogs(photos);
-    }, [photos]);
+    const handleSearch = (query) => {
+        setCurrentQuery(query);
+        writeCachedQuery(query);
+        setPage(1);
+        setTotalHits(0);
+        isLoading(true);
+        loadPage(query, 1, false);
+    };
+
+    const hasMore = photos.length < totalHits;
 
     useEffect(() => {
         const sentinel = sentinelRef.current;
-        if (!sentinel || visibleCount >= dogs.length) return;
+        if (!sentinel || !hasMore || fetchingMore) return;
+
         const observer = new IntersectionObserver(
             ([entry]) => {
-                if (entry.isIntersecting) {
-                    setVisibleCount(v => Math.min(v + BATCH_SIZE, dogs.length));
+                if (entry.isIntersecting && !fetchingMore) {
+                    const nextPage = page + 1;
+                    setPage(nextPage);
+                    setFetchingMore(true);
+                    loadPage(currentQuery, nextPage, true).then(() => setFetchingMore(false));
                 }
             },
-            { rootMargin: '300px' }
+            { rootMargin: '400px' }
         );
         observer.observe(sentinel);
         return () => observer.disconnect();
-    }, [visibleCount, dogs.length]);
-
-    const handleSearch = (query) => {
-        setCurrentQuery(query);
-        setVisibleCount(BATCH_SIZE);
-        isLoading(true);
-        handlePhotos(query);
-    };
-
-    const visibleDogs = dogs.slice(0, visibleCount);
-    const hasMore = visibleCount < dogs.length;
+    }, [hasMore, fetchingMore, page, currentQuery]);
 
     return (
         <>
@@ -73,7 +83,11 @@ const Main = () => {
             )}
             <header className="app-header">
                 <Header />
-                <SearchBox placeholder="Search anything..." onSearch={handleSearch} />
+                <SearchBox
+                    placeholder="Search anything..."
+                    onSearch={handleSearch}
+                    initialQuery={currentQuery}
+                />
             </header>
             {error && (
                 <div className="error-banner">Could not fetch photos. Check your API key or connection.</div>
@@ -86,24 +100,35 @@ const Main = () => {
                 <div className="content-area">
                     <div className="layout-wrapper">
                         <div className="photo-grid">
-                            {visibleDogs.length > 0 && visibleDogs.map((dog, i) => (
-                                <Card key={dog.id} photo={dog} index={i} onClick={setSelectedPhoto} />
+                            {photos.map((photo, i) => (
+                                <Card
+                                    key={photo.id}
+                                    photo={photo}
+                                    index={Math.min(i, 15)}
+                                    onClick={setSelectedPhoto}
+                                />
                             ))}
-                            {hasMore && (
-                                <div className="scroll-sentinel" ref={sentinelRef} />
-                            )}
-                            {!hasMore && dogs.length > BATCH_SIZE && (
-                                <p className="load-more-hint">All {dogs.length} photos loaded</p>
-                            )}
                         </div>
-                        {dogs.length > 0 && (
+                        {photos.length > 0 && (
                             <Sidebar
-                                photos={dogs}
+                                photos={photos}
                                 currentQuery={currentQuery}
                                 onSearch={handleSearch}
                             />
                         )}
                     </div>
+
+                    {hasMore && !fetchingMore && (
+                        <div className="scroll-sentinel" ref={sentinelRef} />
+                    )}
+                    {fetchingMore && (
+                        <div className="fetch-more-loader">
+                            <div className="fetch-more-spinner" />
+                        </div>
+                    )}
+                    {!hasMore && photos.length > 0 && totalHits > 0 && (
+                        <p className="load-more-hint">All {photos.length} photos loaded</p>
+                    )}
                 </div>
             )}
         </>

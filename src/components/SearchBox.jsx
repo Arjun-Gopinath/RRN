@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-const SearchBox = ({ placeholder, onSearch }) => {
-    const [query, setQuery] = useState('');
+const SearchBox = ({ placeholder, onSearch, initialQuery = '' }) => {
+    const [query, setQuery] = useState(initialQuery);
 
     const handleSearch = () => {
         if (onSearch && query.trim()) onSearch(query.trim());
