@@ -4,9 +4,7 @@ const Modal = ({ photo, onClose }) => {
     const tags = photo.tags.split(',').map(t => t.trim()).filter(Boolean);
 
     useEffect(() => {
-        const handleKeyDown = (e) => {
-            if (e.key === 'Escape') onClose();
-        };
+        const handleKeyDown = (e) => { if (e.key === 'Escape') onClose(); };
         document.addEventListener('keydown', handleKeyDown);
         document.body.style.overflow = 'hidden';
         return () => {
@@ -33,6 +31,8 @@ const Modal = ({ photo, onClose }) => {
                         )}
                         <span className="modal-username">{photo.user}</span>
                     </div>
+
+                    <div className="modal-divider" />
 
                     <div className="modal-stats">
                         <span title="Views">&#128065; {photo.views.toLocaleString()}</span>

@@ -1,28 +1,28 @@
-import { Div, Image, Tag } from 'atomize'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
-const Card = (props) => {
-    const { photo, onClick } = props
-    const [tags, setTags] = useState([]);
-    useEffect(() => {
-        setTags(photo.tags.split(','));
-    }, []);
+const Card = ({ photo, onClick, index = 0 }) => {
+    const tags = photo.tags.split(',').map(t => t.trim()).filter(Boolean).slice(0, 3);
+    // Wider tilt range: ±3.5° for a naturally scattered feel
+    const rotation = (((photo.id % 11) - 5) * 0.7).toFixed(2);
+
     return (
-        <Div
-            bg="secondary"
-            align="left"
-            border="3px solid"
-            borderColor="primary"
-            m="5px"
-            cursor="pointer"
+        <div
+            className="photo-card"
+            style={{
+                '--tilt': `${rotation}deg`,
+                '--delay': `${index * 45}ms`,
+            }}
             onClick={() => onClick && onClick(photo)}
         >
-            <Image h={photo.previewHeight + "px"}
-                w={photo.previewWidth + "px"} src={photo.previewURL} />
-            <Div p="2px" d="flex" flexWrap="wrap" bg="secondary" h={"auto"} w={photo.previewWidth + "px"}>
-                {tags.length > 0 && tags.map((tag) => <Tag key={tag} m={"3px"}>{tag}</Tag>)}
-            </Div>
-        </Div >
+            <img src={photo.previewURL} alt={photo.tags} className="card-image" />
+            <div className="card-caption">
+                {tags.map((tag, i) => (
+                    <span key={tag} className="card-tag">
+                        {tag}{i < tags.length - 1 ? ', ' : ''}
+                    </span>
+                ))}
+            </div>
+        </div>
     )
 }
 
